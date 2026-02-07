@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Nayvi: ❤️</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #1a1a1a; /* Fondo oscuro como en el video */
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+        }
+
+        /* Contenedor del Árbol */
+        #tree-canvas {
+            position: absolute;
+            transition: transform 1.5s cubic-bezier(0.45, 0.05, 0.55, 0.95);
+            z-index: 1;
+        }
+
+        /* Contenedor del Mensaje */
+        #message-container {
+            position: absolute;
+            left: 15%; /* Aparecerá a la izquierda cuando el árbol se mueva */
+            width: 35%;
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: all 1.5s ease;
+            z-index: 2;
+            text-align: left;
+        }
+
+        h1 { color: #ff4d6d; font-size: 2.5rem; margin-bottom: 20px; }
+        p { font-size: 1.2rem; line-height: 1.6; color: #ddd; }
+
+        .visible {
+            opacity: 1 !important;
+            transform: translateX(0) !important;
+        }
+
+        .move-tree {
+            transform: translateX(25vw); /* Desplaza el árbol a la derecha */
+        }
+    </style>
+</head>
+<body>
+
+    <div id="message-container">
+        <h1>Para el amor de mi vida ❤️</h1>
+        <p>Si pudiera elegir un lugar seguro, sería a tu lado.</p>
+        <p>Aunque estemos lejos, mi corazón está contigo en cada paso que das por Dublín.</p>
+        <p><b>¡Feliz San Valentín!</b></p>
+    </div>
+
+    <canvas id="tree-canvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('tree-canvas');
+        const ctx = canvas.getContext('2d');
+        const msg = document.getElementById('message-container');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const hearts = [];
+        const colors = ['#ff4d6d', '#ff758f', '#ff8fa3', '#ffb3c1', '#fb6f92'];
+
+        function drawTrunk() {
+            ctx.fillStyle = '#4a2c2a';
+            // Dibujar tronco simple
+            ctx.fillRect(canvas.width / 2 - 10, canvas.height / 2 + 50, 20, 150);
+        }
+
+        function createHeart(x, y) {
+            return {
+                x: canvas.width / 2, // Empiezan en el tronco
+                y: canvas.height / 2 + 50,
+                targetX: x,
+                targetY: y,
+                size: Math.random() * 8 + 4,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                alpha: 0,
+                delay: Math.random() * 2000
+            };
+        }
+
+        // Crear la forma de la copa (Círculo/Corazón de hojas)
+        for (let i = 0; i < 250; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const radius = Math.random() * 120;
+            const x = (canvas.width / 2) + Math.cos(angle) * radius;
+            const y = (canvas.height / 2 - 20) + Math.sin(angle) * radius;
+            hearts.push(createHeart(x, y));
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawTrunk();
+
+            hearts.forEach(h => {
+                // Animación de movimiento suave hacia sus posiciones
+                h.x += (h.targetX - h.x) * 0.02;
+                h.y += (h.targetY - h.y) * 0.03;
+                if(h.alpha < 1) h.alpha += 0.01;
+
+                ctx.globalAlpha = h.alpha;
+                ctx.fillStyle = h.color;
+                
+                // Dibujar forma de corazón pequeña
+                ctx.beginPath();
+                ctx.arc(h.x, h.y, h.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        // Después de 4 segundos, mover el árbol y mostrar mensaje
+        setTimeout(() => {
+            canvas.classList.add('move-tree');
+            msg.classList.add('visible');
+        }, 4500);
+
+    </script>
+</body>
+</html>
